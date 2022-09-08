@@ -1,0 +1,49 @@
+<html>
+    
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+    <div>
+        <fieldset>
+                <textarea cols="40" rows="15" id="userInput">
+                    최근 온라인커뮤니티에 ‘복권 명당 1등 집 이름이 바뀜’이라는 글이 올라왔다. 이 글에 따르면 이 판매점의 기존 간판명은 ‘1등 29’번 이였다. 그러나 30일 현재 ‘2분 후 단속’이라 적힌 간판으로 교체된 것.
+
+해당 판매점은 로또 1등만 무려 29차례 배출해 ‘로또 명당’으로 불리는 곳이다. 평소 복권을 구입하려는 차들이 몰린 탓에 교통난이 심각하다는 민원이 계속돼 왔다.
+
+인근 도로에 불법주정차 하는 차들이 많아, 주변 민원이 끊이지 않았고 결국 지난 2월 구청에서 매장 주변 도로 주정차 가능 시간을 5분에서 2분으로 줄였다. 판매점 인근에는 2대의 주정차 단속 CCTV와 탄력봉 등이 설치된 상태다.
+                </textarea>
+                <br>
+                <button id="detectBtn">언어감지</button>
+                <br>
+                <p>결과:<span id='result'></span></p>
+        </fieldset>
+    </div>
+    <script>
+
+        //$('#detectBtn').on('click', function() {
+        $('#detectBtn').on('click', () => {
+            // 1. 사용자가 입력한 텍스트를 추출 => 특정 후 추출
+            let src = $('#userInput').val()
+            console.log( src )
+            // 2. 해당 텍스트를 서버측으로 전송( 서버주소, 전송방식(post), 응답형태(json))
+            //    비동기 백그라운드 통신 방식으로 전송(ajax)
+            $.post({
+                url:'/predict',         // 서버측 주소
+                data:'key='+src,         // 전달할 데이터 키=값&키=값....
+                dataType:'json',        // 응답 데이터는 json으로 전달해라(포멧지정)
+                success:(res)=>{        // 통신이 성공하면 결과를 res에 담아서 콜백함수를 호출한다
+                    // 3. 결과를 화면에 표시하시오 -> 이 글은 한국어 입니다.
+                    console.log( '성공', res )
+                    $('#result').html( `이 글은 ${ res.value } 입니다.` )
+                },
+                error:(err)=>{          // 통신오류
+                    console.log( '오류', err )
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>
